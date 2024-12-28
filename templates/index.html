@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapSort</title>
+</head>
+<body>
+    <h1>SnapSort</h1>
+    <form id="organize-form" method="POST" action="/organize">
+        <input type="text" name="event_name" placeholder="Enter event name" required>
+        <button type="submit">Organize</button>
+
+        {% for date, files in files_with_thumbnails.items() %}
+        <h2>
+            <input type="checkbox" class="group-checkbox" data-group="{{ date }}"> {{ date }}
+        </h2>
+        <div>
+            {% for file in files %}
+            <div>
+                <input type="checkbox" name="files" value="{{ file.original }}" class="file-checkbox" data-group="{{ date }}">
+                {% if file.thumbnail %}
+                <img src="/static/thumbnails/{{ file.thumbnail }}" alt="{{ file.original }}" width="150">
+                {% else %}
+                <p>{{ file.original }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </form>
+    <script>
+        document.querySelectorAll('.group-checkbox').forEach(groupCheckbox => {
+            groupCheckbox.addEventListener('change', event => {
+                const group = event.target.dataset.group;
+                const checkboxes = document.querySelectorAll(`.file-checkbox[data-group="${group}"]`);
+                checkboxes.forEach(cb => cb.checked = event.target.checked);
+            });
+        });
+    </script>
+</body>
+</html>
