@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import subprocess
 from collections import defaultdict
 
 from flask import Flask, render_template, request
@@ -24,7 +25,24 @@ files_with_thumbnails: dict[str, str] = {}
 
 @app.route("/")
 def home():
-    return render_template("index.html", files_with_thumbnails=files_with_thumbnails)
+    file_tree = generate_tree(BASE_DIR)
+    return render_template(
+        "index.html", file_tree=file_tree, files_with_thumbnails=files_with_thumbnails
+    )
+
+
+def generate_tree(directory):
+    try:
+        result = subprocess.run(
+            ["tree", "-L", "2", directory],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return f"Error generating tree: {e.stderr}"
 
 
 def organize():
@@ -37,7 +55,7 @@ def organize():
     dates = set()
     for file in selected_files:
         file_path = os.path.join(BASE_DIR, file)
-        date = get_image_date(file_path)  # Use your date extraction function
+        date = get_image_date(file_path)
         if date:
             dates.add(date)
 
@@ -129,10 +147,6 @@ def prepare_thumbnails():
 
             files_with_thumbnails[date].append(
                 {"thumbnail": thumbnail, "original": file}
-            )
-        else:
-            files_with_thumbnails["Unsupported"].append(
-                {"thumbnail": None, "original": file}
             )
 
 

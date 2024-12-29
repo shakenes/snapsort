@@ -8,49 +8,59 @@
   </head>
   <body>
     <h1>SnapSort</h1>
-    <form id="action-form" method="POST" action="">
-      <!-- Organize Section -->
-      <input
-        type="text"
-        name="event_name"
-        placeholder="Enter event name"
-        required
-      />
+    <div style="display: flex">
+      <!-- Sidebar for Tree View -->
+      <div style="width: 250px; border-right: 1px solid #ddd; padding: 10px">
+        <pre>{{ file_tree }}</pre>
+      </div>
 
-      <!-- Grouped Files -->
-      {% for date, files in files_with_thumbnails.items() %}
-      <h2>
-        <input type="checkbox" class="group-checkbox" data-group="{{ date }}" />
-        {{ date }}
-      </h2>
-      <div class="file-container">
-        {% for file in files %}
-        <div class="file-item">
+      <form id="action-form" method="POST" action="">
+        <!-- Organize Section -->
+        <input
+          type="text"
+          name="event_name"
+          placeholder="Enter event name"
+          required
+        />
+
+        <!-- Grouped Files -->
+        {% for date, files in files_with_thumbnails.items() %}
+        <h2>
           <input
             type="checkbox"
-            name="files"
-            value="{{ file.original }}"
-            class="file-checkbox"
+            class="group-checkbox"
             data-group="{{ date }}"
           />
-          {% if file.thumbnail %}
-          <img
-            src="/static/thumbnails/{{ file.thumbnail }}"
-            alt="{{ file.original }}"
-          />
-          {% else %}
-          <p>{{ file.original }}</p>
-          {% endif %}
+          {{ date }}
+        </h2>
+        <div class="file-container">
+          {% for file in files %}
+          <div class="file-item">
+            <input
+              type="checkbox"
+              name="files"
+              value="{{ file.original }}"
+              class="file-checkbox"
+              data-group="{{ date }}"
+            />
+            {% if file.thumbnail %}
+            <img
+              src="/static/thumbnails/{{ file.thumbnail }}"
+              alt="{{ file.original }}"
+            />
+            {% else %}
+            <p>{{ file.original }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
         {% endfor %}
-      </div>
-      {% endfor %}
 
-      <!-- Action Buttons -->
-      <button type="submit" name="action" value="organize">Organize</button>
-      <button type="submit" name="action" value="delete">Delete</button>
-    </form>
-
+        <!-- Action Buttons -->
+        <button type="submit" name="action" value="organize">Organize</button>
+        <button type="submit" name="action" value="delete">Delete</button>
+      </form>
+    </div>
     <script>
       // Toggle all checkboxes for a group when the group checkbox is clicked
       document.querySelectorAll(".group-checkbox").forEach((groupCheckbox) => {
