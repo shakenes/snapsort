@@ -26,11 +26,11 @@ files_with_thumbnails: dict[str, str] = {}
 def home():
     return render_template("index.html", files_with_thumbnails=files_with_thumbnails)
 
-
-@app.route("/organize", methods=["POST"])
 def organize():
     event_name = request.form.get("event_name")
     selected_files = request.form.getlist("files")
+    if not selected_files:
+        return "No files selected", 200
 
     # Extract dates from selected files
     dates = set()
@@ -64,18 +64,26 @@ def organize():
         app.logger.error(f"Error organizing files: {e}")
         return "Error organizing files.", 500
 
-
-@app.route("/delete", methods=["POST"])
 def delete():
-    try:
-        src = os.path.join(BASE_DIR, request.form["filename"])
-        os.remove(src)
-        files_with_thumbnails.popitem
-        return "File deleted successfully", 200
-    except Exception as e:
-        logging.error(f"Error deleting file: {e}")
-        return "Error", 500
+    selected_files = request.form.getlist("files")
+    for file in selected_files:
+        try:
+            src = os.path.join(BASE_DIR, file)
+            os.remove(src)
+        except Exception as e:
+            logging.error(f"Error deleting file: {e}")
+            return "Error", 500
+    return "File deleted successfully", 200
 
+
+@app.route("/", methods=["POST"])
+def handle_action():
+    action = request.form.get("action")
+    if action == "organize":
+        return organize()
+    if action == "delete":
+        return delete()
+    
 
 def generate_thumbnail_filename(file_path):
     """Generate a unique thumbnail filename based on file hash."""
