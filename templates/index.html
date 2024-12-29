@@ -1,50 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SnapSort</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
     <h1>SnapSort</h1>
     <form id="action-form" method="POST" action="">
-        <!-- Organize Section -->
-        <input type="text" name="event_name" placeholder="Enter event name" required>
-        
-        <!-- Grouped Files -->
-        {% for date, files in files_with_thumbnails.items() %}
-        <h2>
-            <input type="checkbox" class="group-checkbox" data-group="{{ date }}"> {{ date }}
-        </h2>
-        <div class="file-container">
-            {% for file in files %}
-            <div class="file-item">
-                <input type="checkbox" name="files" value="{{ file.original }}" class="file-checkbox" data-group="{{ date }}">
-                {% if file.thumbnail %}
-                <img src="/static/thumbnails/{{ file.thumbnail }}" alt="{{ file.original }}">
-                {% else %}
-                <p>{{ file.original }}</p>
-                {% endif %}
-            </div>
-            {% endfor %}
+      <!-- Organize Section -->
+      <input
+        type="text"
+        name="event_name"
+        placeholder="Enter event name"
+        required
+      />
+
+      <!-- Grouped Files -->
+      {% for date, files in files_with_thumbnails.items() %}
+      <h2>
+        <input type="checkbox" class="group-checkbox" data-group="{{ date }}" />
+        {{ date }}
+      </h2>
+      <div class="file-container">
+        {% for file in files %}
+        <div class="file-item">
+          <input
+            type="checkbox"
+            name="files"
+            value="{{ file.original }}"
+            class="file-checkbox"
+            data-group="{{ date }}"
+          />
+          {% if file.thumbnail %}
+          <img
+            src="/static/thumbnails/{{ file.thumbnail }}"
+            alt="{{ file.original }}"
+          />
+          {% else %}
+          <p>{{ file.original }}</p>
+          {% endif %}
         </div>
         {% endfor %}
+      </div>
+      {% endfor %}
 
-        <!-- Action Buttons -->
-        <button type="submit" name="action" value="organize">Organize</button>
-        <button type="submit" name="action" value="delete">Delete</button>
+      <!-- Action Buttons -->
+      <button type="submit" name="action" value="organize">Organize</button>
+      <button type="submit" name="action" value="delete">Delete</button>
     </form>
 
     <script>
-        // Toggle all checkboxes for a group when the group checkbox is clicked
-        document.querySelectorAll('.group-checkbox').forEach(groupCheckbox => {
-            groupCheckbox.addEventListener('change', event => {
-                const group = event.target.dataset.group; // Get the group (date)
-                const checkboxes = document.querySelectorAll(`.file-checkbox[data-group="${group}"]`);
-                checkboxes.forEach(cb => cb.checked = event.target.checked); // Toggle all checkboxes in the group
-            });
+      // Toggle all checkboxes for a group when the group checkbox is clicked
+      document.querySelectorAll(".group-checkbox").forEach((groupCheckbox) => {
+        groupCheckbox.addEventListener("change", (event) => {
+          const group = event.target.dataset.group; // Get the group (date)
+          const checkboxes = document.querySelectorAll(
+            `.file-checkbox[data-group="${group}"]`,
+          );
+          checkboxes.forEach((cb) => (cb.checked = event.target.checked)); // Toggle all checkboxes in the group
         });
+      });
     </script>
-</body>
+  </body>
 </html>

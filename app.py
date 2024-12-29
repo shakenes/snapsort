@@ -26,6 +26,7 @@ files_with_thumbnails: dict[str, str] = {}
 def home():
     return render_template("index.html", files_with_thumbnails=files_with_thumbnails)
 
+
 def organize():
     event_name = request.form.get("event_name")
     selected_files = request.form.getlist("files")
@@ -64,6 +65,7 @@ def organize():
         app.logger.error(f"Error organizing files: {e}")
         return "Error organizing files.", 500
 
+
 def delete():
     selected_files = request.form.getlist("files")
     for file in selected_files:
@@ -83,7 +85,7 @@ def handle_action():
         return organize()
     if action == "delete":
         return delete()
-    
+
 
 def generate_thumbnail_filename(file_path):
     """Generate a unique thumbnail filename based on file hash."""
