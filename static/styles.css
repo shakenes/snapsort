@@ -68,3 +68,14 @@ button:hover {
 .group-checkbox {
     margin-right: 10px;
 }
+
+.sidebar {
+    max-width: 20%;
+    min-width: 200px;
+    width: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
